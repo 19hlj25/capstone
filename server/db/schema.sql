@@ -1,10 +1,12 @@
-DROP TABLE IF EXISTS greetings;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS plans;
 
-
-CREATE TABLE greetings(
-    id SERIAL PRIMARY KEY,
-    message text
+CREATE TABLE plans (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  monthly_price INTEGER NOT NULL,
+  coupon_value INTEGER NOT NULL,
+  description TEXT
 );
 
 CREATE TABLE users (
