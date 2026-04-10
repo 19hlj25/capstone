@@ -1,118 +1,90 @@
-import { useEffect, useState } from "react";
-import heroImg from "./assets/hero.png";
+import { useState } from "react";
 import "./App.css";
+import Hero from "./components/Hero";
+import AuthForm from "./components/AuthForm";
 
+// Main application component for Community Perk Pass.
+// Manages authentication state and controls the authentication flow.
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [user, setUser] = useState(null);
   const [mode, setMode] = useState("login");
-
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  useEffect(() => {
-    const API = import.meta.env.VITE_API;
-
-    async function testConnection() {
-      try {
-        const res = await fetch(API);
-        const text = await res.text();
-        console.log("backend response:", text);
-      } catch (error) {
-        console.error("fetch error:", error);
-      }
-    }
-
-    testConnection();
-  }, []);
-
+  // Sends login or registration data to the backend API.
+  // Saves the returned token and user data when authentication succeeds.
   async function handleSubmit(event) {
     event.preventDefault();
 
     const API = import.meta.env.VITE_API;
-    const endpoint = 
+    const endpoint =
       mode === "login" ? `${API}/api/users/login` : `${API}/api/users/register`;
 
-      const body = 
-        mode === "login"
+    const body =
+      mode === "login"
         ? { username, password }
-        : {username, email, password};
-      
-      try {
-        const response = await fetch(endpoint, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
-        });
+        : { username, email, password };
 
-        const result = await response.json();
-        console.log(result);
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
 
-        if (!response.ok) {
-          alert(result.error || "Something went wrong");
-          return;
-        }
+      const result = await response.json();
 
-        setToken(result.token);
-        setUser(result.user);
-        localStorage.setItem("token", result.token);
-
-        setUsername("");
-        setEmail("");
-        setPassword("");
-      } catch (error) {
-        console.error("auth error:", error);
+      if (!response.ok) {
+        alert(result.error || "Something went wrong");
+        return;
       }
+
+      setToken(result.token);
+      setUser(result.user);
+      localStorage.setItem("token", result.token);
+
+      setUsername("");
+      setEmail("");
+      setPassword("");
+    } catch (error) {
+      console.error("auth error:", error);
     }
+  }
+
+  // Clears the user's session from state and localStorage.
+  function handleLogout() {
+    setToken("");
+    setUser(null);
+    localStorage.removeItem("token");
+  }
 
   return (
     <div>
-      <h1>Community Perk Pass</h1>
-      <img src={heroImg} alt="Community Perk Pass" width="170" />
-      <h2>{mode === "login" ? "Login" : "Register"}</h2>
+      <Hero />
 
-      <button onClick={() => setMode("login")}>Login</button>
-      <button onClick={() => setMode("register")}>Register</button>
+      <AuthForm
+        mode={mode}
+        setMode={setMode}
+        username={username}
+        setUsername={setUsername}
+        email={email}
+        setEmail={setEmail}
+        password={password}
+        setPassword={setPassword}
+        handleSubmit={handleSubmit}
+        token={token}
+      />
 
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username
-        <input
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          />
-        </label>
-
-        {mode === "register" && (
-          <label>
-            Email
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            />
-            </label>
-        )}
-
-        <label>
-          Password
-          <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-
-        <button type="submit">
-          {mode === "login" ? "Login" : "Register"}
-        </button>
-
-      </form>
-
-      
-      <p>{token ? "Logged in" : "Not logged in"}</p>
+      {token && (
+        <div>
+          <p>Welcome, {user?.username || "user"}!</p>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
+      )}
     </div>
   );
 }

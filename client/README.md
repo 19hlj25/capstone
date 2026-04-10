@@ -1,16 +1,80 @@
-# React + Vite
+# Community Perk Pass
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
+Community Perk Pass is a subscription-based coupon platform designed to help users discover and save money at local small businesses. Users can create accounts, log in securely, and eventually access subscription-based coupon features.
 
-Currently, two official plugins are available:
+## Problem Statement
+Small businesses often struggle to attract repeat local customers, while community members may not know what deals and services are available nearby. Community Perk Pass aims to connect local customers with local businesses through a simple subscription coupon platform.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Goals
+- Build a full-stack web application from scratch
+- Implement secure user authentication
+- Support future features such as subscription plans, favorites, and coupon browsing
+- Highlight and support small businesses in the community
 
-## React Compiler
+## Core Features
+- User registration
+- User login
+- Secure password hashing with bcrypt
+- JWT-based authentication
+- Persistent token storage in localStorage
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Distinguishing Features
+- Focus on small business coupon discovery
+- Subscription model for curated local deals
+- Full-stack authentication flow built with React, Express, and PostgreSQL
 
-## Expanding the ESLint configuration
+## Tech Stack
+### Frontend
+- React
+- Vite
+- CSS
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Backend
+- Node.js
+- Express
+
+### Database
+- PostgreSQL
+
+### Authentication
+- bcrypt
+- jsonwebtoken
+
+### Tools
+- Thunder Client
+- Render
+- GitHub
+- VS Code
+
+## Architecture Overview
+```txt
+client/
+  src/
+    components/
+      AuthForm.jsx
+      Hero.jsx
+    App.jsx
+
+server/
+  db/
+    client.js
+    schema.sql
+    queries/
+      users.js
+  routes/
+    users.js
+  utils/
+    jwt.js
+  index.js
+
+  ## Screenshots
+
+### Login Page
+![Login Screenshot](./screenshots/login.png)
+
+### Register Page
+![Register Screenshot](./screenshots/register.png)
+
+### Logged In State
+![Logged In Screenshot](./screenshots/logged-in.png)
