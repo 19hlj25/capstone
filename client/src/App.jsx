@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Hero from "./components/Hero";
 import AuthForm from "./components/AuthForm";
@@ -12,7 +12,23 @@ export default function App() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [plans, setPlans] = useState([]);
 
+  useEffect(() => {
+  const API = import.meta.env.VITE_API;
+
+  async function fetchPlans() {
+    try {
+      const response = await fetch(`${API}/api/plans`);
+      const result = await response.json();
+      setPlans(result);
+    } catch (error) {
+      console.error("Error fetching plans:", error);
+    }
+  }
+
+  fetchPlans();
+}, []);
   // Sends login or registration data to the backend API.
   // Saves the returned token and user data when authentication succeeds.
   async function handleSubmit(event) {
@@ -85,6 +101,18 @@ export default function App() {
           <button onClick={handleLogout}>Logout</button>
         </div>
       )}
+      <div>
+  <h2>Available Plans</h2>
+
+  {plans.map((plan) => (
+    <div key={plan.id}>
+      <h3>{plan.name}</h3>
+      <p>${plan.monthly_price}/month</p>
+      <p>${plan.coupon_value} in coupons</p>
+      <p>{plan.description}</p>
+    </div>
+  ))}
+</div>
     </div>
   );
 }
