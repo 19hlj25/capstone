@@ -79,13 +79,4 @@ server/
     jwt.js
   index.js
 
-  ## Screenshots
-
-### Login Page
-![Login Screenshot](./screenshots/login.png)
-
-### Register Page
-![Register Screenshot](./screenshots/register.png)
-
-### Logged In State
-![Logged In Screenshot](./screenshots/logged-in.png)
+  
