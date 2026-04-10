@@ -56,8 +56,17 @@ export default function App() {
           return;
         }
 
-        setToken
-      }}
+        setToken(result.token);
+        setUser(result.user);
+        localStorage.setItem("token", result.token);
+
+        setUsername("");
+        setEmail("");
+        setPassword("");
+      } catch (error) {
+        console.error("auth error:", error);
+      }
+    }
 
   return (
     <div>
@@ -68,7 +77,7 @@ export default function App() {
       <button onClick={() => setMode("login")}>Login</button>
       <button onClick={() => setMode("register")}>Register</button>
 
-      <form>
+      <form onSubmit={handleSubmit}>
         <label>
           Username
         <input
