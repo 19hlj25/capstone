@@ -11,10 +11,10 @@ const router = express.Router();
 
 router.post("/register", async (req, res, next) => {
   try {
-    console.log("REGISTER HIT");
+    
 
     const { username, email, password } = req.body;
-    console.log("BODY READ");
+    
 
     if (!username || !email || !password) {
       return res.status(400).send({
@@ -23,7 +23,7 @@ router.post("/register", async (req, res, next) => {
     }
 
     const existingUsername = await getUserByUsername(username);
-    console.log("USERNAME CHECK DONE");
+    
 
     if (existingUsername) {
       return res.status(400).send({
@@ -32,7 +32,7 @@ router.post("/register", async (req, res, next) => {
     }
 
     const existingEmail = await getUserByEmail(email);
-    console.log("EMAIL CHECK DONE");
+    
 
     if (existingEmail) {
       return res.status(400).send({
@@ -41,13 +41,13 @@ router.post("/register", async (req, res, next) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("PASSWORD HASHED");
+    
 
     const user = await createUser(username, email, hashedPassword);
-    console.log("USER CREATED");
+    
 
     const token = createToken({ id: user.id });
-    console.log("TOKEN CREATED");
+    
 
     return res.status(201).send({ token, user });
   } catch (error) {
