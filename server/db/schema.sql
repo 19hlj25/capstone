@@ -6,7 +6,7 @@ CREATE TABLE plans (
   name TEXT NOT NULL,
   monthly_price INTEGER NOT NULL,
   coupon_value INTEGER NOT NULL,
-  description TEXT
+  description TEXT NOT NULL
 );
 
 CREATE TABLE users (
