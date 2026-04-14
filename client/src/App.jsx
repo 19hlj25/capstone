@@ -1,6 +1,17 @@
 import { useEffect, useState } from "react";
 import AuthForm from "./components/AuthForm";
 
+const API_BASE_URL = "http://localhost:3001/api";
+const MIN_PASSWORD_LENGTH = 8;
+
+function normalizeAuthInput({ username = "", email = "", password = "" }) {
+  return {
+    username: username.trim(),
+    email: email.trim().toLowerCase(),
+    password,
+  };
+}
+
 export default function App() {
   const [mode, setMode] = useState("login");
   const [username, setUsername] = useState("");
@@ -8,12 +19,18 @@ export default function App() {
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
   const [plans, setPlans] = useState([]);
+  const [authMessage, setAuthMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     async function fetchPlans() {
-      const res = await fetch("http://localhost:3001/api/plans");
-      const data = await res.json();
-      setPlans(data);
+      try {
+        const res = await fetch(`${API_BASE_URL}/plans`);
+        const data = await res.json();
+        setPlans(Array.isArray(data) ? data : []);
+      } catch {
+        setPlans([]);
+      }
     }
 
     fetchPlans();
@@ -21,30 +38,80 @@ export default function App() {
 
   async function handleSubmit(event) {
     event.preventDefault();
+    setAuthMessage("");
+
+    const normalized = normalizeAuthInput({ username, email, password });
+    if (!normalized.username || !normalized.password) {
+      setAuthMessage("Username and password are required.");
+      return;
+    }
+
+    // WHY (Functionality): Matching backend register rules on the client gives
+    // faster feedback before the network request is sent.
+    if (mode === "register") {
+      if (!normalized.email) {
+        setAuthMessage("Email is required for registration.");
+        return;
+      }
+
+      if (normalized.password.length < MIN_PASSWORD_LENGTH) {
+        setAuthMessage(
+          `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`,
+        );
+        return;
+      }
+    }
 
     const endpoint =
       mode === "login"
-        ? "http://localhost:3001/api/users/login"
-        : "http://localhost:3001/api/users/register";
+        ? `${API_BASE_URL}/users/login`
+        : `${API_BASE_URL}/users/register`;
 
     const body =
       mode === "login"
-        ? { username, password }
-        : { username, email, password };
+        ? { username: normalized.username, password: normalized.password }
+        : {
+            username: normalized.username,
+            email: normalized.email,
+            password: normalized.password,
+          };
 
-    const res = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
+    setIsSubmitting(true);
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.token) {
-      setToken(data.token);
+      if (!res.ok) {
+        setAuthMessage(data?.error || "Authentication failed.");
+        return;
+      }
+
+      if (data.token) {
+        setToken(data.token);
+        localStorage.setItem("token", data.token);
+        setAuthMessage("Success! You are authenticated.");
+        setPassword("");
+      } else {
+        setAuthMessage("Authentication failed.");
+      }
+    } catch {
+      setAuthMessage("Unable to reach server. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
+  }
+
+  function handleModeChange(nextMode) {
+    setMode(nextMode);
+    setAuthMessage("");
+    setPassword("");
   }
 
   return (
@@ -53,13 +120,15 @@ export default function App() {
 
       <AuthForm
         mode={mode}
-        setMode={setMode}
+        setMode={handleModeChange}
         username={username}
         setUsername={setUsername}
         email={email}
         setEmail={setEmail}
         password={password}
         setPassword={setPassword}
+        authMessage={authMessage}
+        isSubmitting={isSubmitting}
         handleSubmit={handleSubmit}
         token={token}
       />
