@@ -1,5 +1,3 @@
-// Renders the authentication form for login and registration.
-// Displays different fields depending on the selected auth mode.
 export default function AuthForm({
   mode,
   setMode,
@@ -10,7 +8,6 @@ export default function AuthForm({
   password,
   setPassword,
   handleSubmit,
-  token,
 }) {
   return (
     <div>
@@ -23,6 +20,7 @@ export default function AuthForm({
         <label>
           Username
           <input
+            required
             value={username}
             onChange={(event) => setUsername(event.target.value)}
           />
@@ -32,6 +30,8 @@ export default function AuthForm({
           <label>
             Email
             <input
+              required
+              type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
             />
@@ -41,6 +41,7 @@ export default function AuthForm({
         <label>
           Password
           <input
+            required
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
@@ -51,8 +52,6 @@ export default function AuthForm({
           {mode === "login" ? "Login" : "Register"}
         </button>
       </form>
-
-      <p>{token ? "Logged in" : "Not logged in"}</p>
     </div>
   );
 }

@@ -1,11 +1,14 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import { createToken } from "../utils/jwt.js";
+import requireUser from "../middleware/requireUser.js";
 import {
   getUserByUsername,
   getUserByEmail,
-  createUser
+  createUser,
+  updateUserPlan
 } from "../db/queries/users.js";
+
 
 const router = express.Router();
 
@@ -43,10 +46,15 @@ router.post("/register", async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     
 
-    const user = await createUser(username, email, hashedPassword);
+    const user = await createUser({
+      username, 
+      email, 
+      password: hashedPassword
+  });
     
 
     const token = createToken({ id: user.id });
+
     
 
     return res.status(201).send({ token, user });
@@ -96,6 +104,26 @@ router.post("/login", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+
 });
+
+router.put("/me/plan", requireUser, async (req, res, next) => {
+  try {
+    const { planId } = req.body;
+
+    if(!planId) {
+      return res.status(400).send({
+        error: "planId is required."
+      });
+    }
+    const updatedUser = await updateUserPlan(req.user.id, planId);
+    res.send(updatedUser);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+
 
 export default router;
