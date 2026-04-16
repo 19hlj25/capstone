@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "db:schema": "psql -d community_perk_pass -f db/schema.sql",
-    "db:seed": "node --env-file=.env db/seed.js"
+    "db:schema": "psql $DATABASE_URL -f db/schema.sql",
+    "db:seed": "node db/seed.js"
   },
   "keywords": [],
   "author": "",
