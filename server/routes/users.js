@@ -123,6 +123,9 @@ router.put("/me/plan", requireUser, async (req, res, next) => {
   }
 });
 
+router.get("/me", requireUser, (req, res) => {
+  res.send(req.user);
+});
 
 
 

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node --env-file=.env index.js",
+    "start": "node index.js",
     "db:schema": "psql -d community_perk_pass -f db/schema.sql",
     "db:seed": "node --env-file=.env db/seed.js"
   },
