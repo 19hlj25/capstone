@@ -13,14 +13,19 @@ export default function AuthForm({
     <div>
       <h2>{mode === "login" ? "Login" : "Register"}</h2>
 
-      <button onClick={() => setMode("login")}>Login</button>
-      <button onClick={() => setMode("register")}>Register</button>
+      <button type="button" onClick={() => setMode("login")}>
+        Login
+      </button>
+      <button type="button" onClick={() => setMode("register")}>
+        Register
+      </button>
 
       <form onSubmit={handleSubmit}>
         <label>
           Username
           <input
             required
+            autoComplete="username"
             value={username}
             onChange={(event) => setUsername(event.target.value)}
           />
@@ -32,6 +37,7 @@ export default function AuthForm({
             <input
               required
               type="email"
+              autoComplete="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
             />
@@ -43,6 +49,7 @@ export default function AuthForm({
           <input
             required
             type="password"
+            autoComplete={mode === "login" ? "current-password" : "new-password"}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
