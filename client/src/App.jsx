@@ -25,10 +25,13 @@ export default function App() {
   // Stores available subscription plans from the backend.
   const [plans, setPlans] = useState([]);
 
+  // Stores available local businesses from the backend.
+  const [businesses, setBusinesses] = useState([]);
+
   // Stores error messages for display in the UI.
   const [error, setError] = useState("");
 
-  // Fetches all available plans when the app loads.
+  // Fetches all available plans and businesses when the app loads.
   useEffect(() => {
     async function fetchPlans() {
       try {
@@ -46,7 +49,24 @@ export default function App() {
       }
     }
 
+    async function fetchBusinesses() {
+      try {
+        const res = await fetch(`${API}/businesses`);
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Could not load businesses");
+        }
+
+        setBusinesses(data);
+      } catch (error) {
+        console.error("Error fetching businesses:", error);
+        setError("Could not load businesses.");
+      }
+    }
+
     fetchPlans();
+    fetchBusinesses();
   }, []);
 
   // Fetches the currently logged-in user's latest data using the stored token.
@@ -191,15 +211,6 @@ export default function App() {
       {plans.map((plan) => {
         const isCurrent = Number(user?.plan_id) === Number(plan.id);
 
-        console.log(
-          "user plan:",
-          user?.plan_id,
-          "plan id:",
-          plan.id,
-          "isCurrent:",
-          isCurrent
-        );
-
         return (
           <div
             key={plan.id}
@@ -229,6 +240,26 @@ export default function App() {
           </div>
         );
       })}
+
+      <h2>Businesses</h2>
+
+      {/* Displays all local businesses available in the app. */}
+      {businesses.map((business) => (
+        <div
+          key={business.id}
+          style={{
+            border: "1px solid gray",
+            padding: "10px",
+            marginBottom: "10px",
+            borderRadius: "8px",
+          }}
+        >
+          <h3>{business.name}</h3>
+          <p>Category: {business.category}</p>
+          <p>{business.description}</p>
+          <p>Location: {business.location}</p>
+        </div>
+      ))}
     </div>
   );
 }

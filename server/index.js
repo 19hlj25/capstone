@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import businessesRouter from "./routes/businesses.js";
 import db from "./db/client.js";
 import usersRouter from "./routes/users.js";
 import plansRouter from "./routes/plans.js";
@@ -10,7 +11,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use(getUserFromToken);
+//app.use(getUserFromToken);
+app.use("/api/businesses", businessesRouter);
 app.use("/api/plans", plansRouter);
 app.use("/api/users", usersRouter);
 
