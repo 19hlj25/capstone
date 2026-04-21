@@ -122,7 +122,8 @@ router.put("/me/plan", requireUser, async (req, res, next) => {
     next(error);
   }
 });
-
+//Sends back the currently logged in users info.
+//requires a valid token and returns the user attached by auth middleware.
 router.get("/me", requireUser, (req, res) => {
   res.send(req.user);
 });

@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",
-  "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js",
-    "db:schema": "psql $DATABASE_URL -f db/schema.sql",
-    "db:seed": "node db/seed.js"
-  },
+ "scripts": {
+  "dev": "node --env-file=.env --watch index.js",
+  "start": "node index.js",
+  "db:schema": "psql $DATABASE_URL -f db/schema.sql",
+  "db:seed": "node db/seed.js"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",

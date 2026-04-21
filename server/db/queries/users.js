@@ -1,5 +1,6 @@
 import db from "../client.js";
 
+//finds a user by id and returns safe user fields for auth protected routes
 export async function getUserById(id) {
   const sql = `
     SELECT id, username, email, plan_id
