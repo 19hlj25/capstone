@@ -185,99 +185,123 @@ export default function App() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-4xl font-bold mb-6 text-center">
+  <div className="min-h-screen bg-gray-100 py-10">
+    <div className="max-w-5xl mx-auto px-4">
+      <h1 className="text-4xl md:text-5xl font-bold text-center text-gray-900 mb-2">
         Community Perk Pass
       </h1>
+      <p className="text-center text-gray-600 mb-8">
+        Discover local deals and choose the membership that fits you best.
+      </p>
 
       {/* Displays any error messages. */}
-      {error && (<p className="text-red-500 mb-4">{error}</p>)}
-
-      {/* Shows user info if logged in, otherwise renders the authentication form. */}
-      {token ? (
-        <div>
-          <p>You are logged in as {user?.username}.</p>
-          <p>Current plan: {user?.plan_id ?? "None selected"}</p>
-         <button
-  onClick={handleLogout}
-  className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
->
-  Log Out
-</button>
-        </div>
-      ) : (
-        <AuthForm
-          mode={mode}
-          setMode={setMode}
-          username={username}
-          setUsername={setUsername}
-          email={email}
-          setEmail={setEmail}
-          password={password}
-          setPassword={setPassword}
-          handleSubmit={handleSubmit}
-        />
+            {error && (
+        <p className="bg-red-100 text-red-700 border border-red-200 rounded-md px-4 py-3 mb-6">
+          {error}
+        </p>
       )}
 
-      <h2 className="text-2xl font-semibold mb-4">Plans</h2>
+      {/* Shows user info if logged in, otherwise renders the authentication form. */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-8">
+        {token ? (
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <p className="text-lg font-semibold text-gray-800">
+                You are logged in as {user?.username}.
+              </p>
+              <p className="text-gray-600">
+                Current plan: {user?.plan_id ?? "None selected"}
+              </p>
+            </div>
 
-      {/* Displays all plans and highlights the user's currently selected one. */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {plans.map((plan) => {
-        const isCurrent = Number(user?.plan_id) === Number(plan.id);
-
-        return (
-          <div
-            key={plan.id}
-            className={`p-4 mb-4 rounded-lg border ${
-            isCurrent ? "border-green-500" : "border-gray-300"
-          }`}
-          >
-            <h3 className="text-lg font-semibold">{plan.name}</h3>
-            <p>${plan.monthly_price}/month</p>
-            <p>${plan.coupon_value} in coupons</p>
-            <p>{plan.description}</p>
-
-            {/* Shows a label for the current plan or a button to select a different one. */}
-            {token &&
-              (isCurrent ? (
-                <p className="text-green-600 font-bold">
-                  Current Plan
-                </p>
-              ) : (
-                <button
-                  onClick={() => handleSelectPlan(plan.id)}
-                  className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Select Plan
-                </button>
-              ))}
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition"
+            >
+              Log Out
+            </button>
           </div>
-        );
-      })}
+        ) : (
+          <AuthForm
+            mode={mode}
+            setMode={setMode}
+            username={username}
+            setUsername={setUsername}
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            handleSubmit={handleSubmit}
+          />
+        )}
+      </div>
+{/* Displays all plans and highlights the user's currently selected one. */}
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Plans</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        {plans.map((plan) => {
+          const isCurrent = Number(user?.plan_id) === Number(plan.id);
+
+          return (
+            <div
+              key={plan.id}
+              className={`rounded-2xl p-6 shadow-sm border bg-white ${
+                isCurrent ? "border-green-500 ring-2 ring-green-100" : "border-gray-200"
+              }`}
+            >
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+              <p className="text-3xl font-bold text-blue-600 mb-1">
+                ${plan.monthly_price}
+                <span className="text-base font-medium text-gray-500">/month</span>
+              </p>
+              <p className="text-gray-700 font-medium mb-3">
+                ${plan.coupon_value} in coupons
+              </p>
+              <p className="text-gray-600 mb-4">{plan.description}</p>
+
+              {token &&
+                (isCurrent ? (
+                  <p className="inline-block text-green-700 bg-green-100 px-3 py-1 rounded-full font-semibold">
+                    Current Plan
+                  </p>
+                ) : (
+                  <button
+                    onClick={() => handleSelectPlan(plan.id)}
+                    className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition"
+                  >
+                    Select Plan
+                  </button>
+                ))}
+            </div>
+          );
+        })}
       </div>
 
-      <h2 className="text-2xl font-semibold mt-8 mb-4">Businesses</h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-4">Businesses</h2>
 
-      {/* Displays all local businesses grouped by category. */}
-      {Object.entries(groupedBusinesses).map(
-        ([category, categoryBusinesses]) => (
-          <div key={category} className="mb-6">
-            <h3>{category}</h3>
+      {Object.entries(groupedBusinesses).map(([category, categoryBusinesses]) => (
+        <div key={category} className="mb-8">
+          <h3 className="text-xl font-semibold text-gray-800 mb-3">{category}</h3>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {categoryBusinesses.map((business) => (
               <div
                 key={business.id}
-                className="border border-gray-300 p-4 mb-3 rounded-lg"
+                className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm"
               >
-                <h4 className="font-semibold">{business.name}</h4>
-                <p>{business.description}</p>
-                <p>Location: {business.location}</p>
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                  {business.name}
+                </h4>
+                <p className="text-gray-600 mb-2">{business.description}</p>
+                <p className="text-sm text-gray-500">
+                  Location: {business.location}
+                </p>
               </div>
             ))}
           </div>
-        ),
-      )}
+        </div>
+      ))}
     </div>
-  );
+  </div>
+);
 }
