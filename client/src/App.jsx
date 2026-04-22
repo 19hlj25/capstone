@@ -11,7 +11,7 @@ export default function App() {
 
   // Stores the currently logged-in user, pulled from localStorage if available.
   const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user")) || null
+    JSON.parse(localStorage.getItem("user")) || null,
   );
 
   // Controlled form inputs for authentication.
@@ -138,9 +138,7 @@ export default function App() {
       mode === "login" ? `${API}/users/login` : `${API}/users/register`;
 
     const body =
-      mode === "login"
-        ? { username, password }
-        : { username, email, password };
+      mode === "login" ? { username, password } : { username, email, password };
 
     try {
       const res = await fetch(endpoint, {
@@ -168,7 +166,7 @@ export default function App() {
     }
   }
   //Groups businesses by category so they can be displayed in sections
-  const groupedBusinesses = businesses.reduce((groups, business) =>{
+  const groupedBusinesses = businesses.reduce((groups, business) => {
     if (!groups[business.category]) {
       groups[business.category] = [];
     }
@@ -187,18 +185,25 @@ export default function App() {
   }
 
   return (
-    <div>
-      <h1>Community Perk Pass</h1>
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-4xl font-bold mb-6 text-center">
+        Community Perk Pass
+      </h1>
 
       {/* Displays any error messages. */}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && (<p className="text-red-500 mb-4">{error}</p>)}
 
       {/* Shows user info if logged in, otherwise renders the authentication form. */}
       {token ? (
         <div>
           <p>You are logged in as {user?.username}.</p>
           <p>Current plan: {user?.plan_id ?? "None selected"}</p>
-          <button onClick={handleLogout}>Log Out</button>
+         <button
+  onClick={handleLogout}
+  className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+>
+  Log Out
+</button>
         </div>
       ) : (
         <AuthForm
@@ -214,23 +219,21 @@ export default function App() {
         />
       )}
 
-      <h2>Plans</h2>
+      <h2 className="text-2xl font-semibold mb-4">Plans</h2>
 
       {/* Displays all plans and highlights the user's currently selected one. */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {plans.map((plan) => {
         const isCurrent = Number(user?.plan_id) === Number(plan.id);
 
         return (
           <div
             key={plan.id}
-            style={{
-              border: isCurrent ? "2px solid green" : "1px solid gray",
-              padding: "10px",
-              marginBottom: "10px",
-              borderRadius: "8px",
-            }}
+            className={`p-4 mb-4 rounded-lg border ${
+            isCurrent ? "border-green-500" : "border-gray-300"
+          }`}
           >
-            <h3>{plan.name}</h3>
+            <h3 className="text-lg font-semibold">{plan.name}</h3>
             <p>${plan.monthly_price}/month</p>
             <p>${plan.coupon_value} in coupons</p>
             <p>{plan.description}</p>
@@ -238,42 +241,43 @@ export default function App() {
             {/* Shows a label for the current plan or a button to select a different one. */}
             {token &&
               (isCurrent ? (
-                <p style={{ color: "green", fontWeight: "bold" }}>
+                <p className="text-green-600 font-bold">
                   Current Plan
                 </p>
               ) : (
-                <button onClick={() => handleSelectPlan(plan.id)}>
+                <button
+                  onClick={() => handleSelectPlan(plan.id)}
+                  className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
                   Select Plan
                 </button>
               ))}
           </div>
         );
       })}
+      </div>
 
-      <h2>Businesses</h2>
+      <h2 className="text-2xl font-semibold mt-8 mb-4">Businesses</h2>
 
       {/* Displays all local businesses grouped by category. */}
-      {Object.entries(groupedBusinesses).map(([category, categoryBusinesses]) => (
-        <div key={category} style={{ marginBottom: "24px" }}>
+      {Object.entries(groupedBusinesses).map(
+        ([category, categoryBusinesses]) => (
+          <div key={category} className="mb-6">
             <h3>{category}</h3>
-            
+
             {categoryBusinesses.map((business) => (
-              <div 
-              key={business.id}
-              style={{
-                border: "1px solid gray",
-                padding: "10px",
-                marginBottom: "10px",
-                borderRadius: "8px",
-          }}
-        >
-          <h4>{business.name}</h4>
-          <p>{business.description}</p>
-          <p>Location: {business.location}</p>
-        </div>
-      ))}
+              <div
+                key={business.id}
+                className="border border-gray-300 p-4 mb-3 rounded-lg"
+              >
+                <h4 className="font-semibold">{business.name}</h4>
+                <p>{business.description}</p>
+                <p>Location: {business.location}</p>
+              </div>
+            ))}
+          </div>
+        ),
+      )}
     </div>
-  ))}
-  </div>
   );
 }
