@@ -167,6 +167,15 @@ export default function App() {
       setError("Could not connect to server.");
     }
   }
+  //Groups businesses by category so they can be displayed in sections
+  const groupedBusinesses = businesses.reduce((groups, business) =>{
+    if (!groups[business.category]) {
+      groups[business.category] = [];
+    }
+
+    groups[business.category].push(business);
+    return groups;
+  }, {});
 
   // Logs the user out by clearing token and user data from state and localStorage.
   function handleLogout() {
@@ -243,23 +252,28 @@ export default function App() {
 
       <h2>Businesses</h2>
 
-      {/* Displays all local businesses available in the app. */}
-      {businesses.map((business) => (
-        <div
-          key={business.id}
-          style={{
-            border: "1px solid gray",
-            padding: "10px",
-            marginBottom: "10px",
-            borderRadius: "8px",
+      {/* Displays all local businesses grouped by category. */}
+      {Object.entries(groupedBusinesses).map(([category, categoryBusinesses]) => (
+        <div key={category} style={{ marginBottom: "24px" }}>
+            <h3>{category}</h3>
+            
+            {categoryBusinesses.map((business) => (
+              <div 
+              key={business.id}
+              style={{
+                border: "1px solid gray",
+                padding: "10px",
+                marginBottom: "10px",
+                borderRadius: "8px",
           }}
         >
-          <h3>{business.name}</h3>
-          <p>Category: {business.category}</p>
+          <h4>{business.name}</h4>
           <p>{business.description}</p>
           <p>Location: {business.location}</p>
         </div>
       ))}
     </div>
+  ))}
+  </div>
   );
 }
