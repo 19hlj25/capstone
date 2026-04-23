@@ -3,6 +3,7 @@ import db from "./client.js";
 // Seeds initial subscription plans into the database.
 // Clears existing plans to avoid duplicate entries.
 async function seedPlans() {
+  await db.query(`UPDATE users SET plan_id = NULL;`);
   await db.query(`DELETE FROM plans;`);
 
   await db.query(`
@@ -11,8 +12,6 @@ async function seedPlans() {
       ('Basic', 20, 500, 'Get access to up to $500 worth of local coupons each month'),
       ('Plus', 30, 600, 'Get access to up to $600 worth of local coupons each month');
   `);
-
-
 }
 //inserts starter local businesses into the database for frontend display
 async function seedBusinesses() {
@@ -39,7 +38,7 @@ async function seedBusinesses() {
 
 // Runs all seed functions for the database.
 async function seed() {
-  await db.connect();
+  
 
 const result = await db.query("SELECT current_database();");
 console.log(result.rows[0]);

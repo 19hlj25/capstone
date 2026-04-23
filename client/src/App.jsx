@@ -4,6 +4,8 @@ import AuthForm from "./components/AuthForm";
 // Determines API base URL. Uses deployed backend if available, otherwise falls back to local server.
 const API = import.meta.env.VITE_API_URL || "http://localhost:3001/api";
 
+
+
 // Main application component that handles authentication, user state, and plan selection.
 export default function App() {
   // Tracks whether user is in login or register mode.
@@ -31,6 +33,8 @@ export default function App() {
   // Stores error messages for display in the UI.
   const [error, setError] = useState("");
 
+const [favorites, setFavorites] = useState([]);
+
   // Fetches all available plans and businesses when the app loads.
   useEffect(() => {
     async function fetchPlans() {
@@ -48,6 +52,7 @@ export default function App() {
         setError("Could not load plans.");
       }
     }
+
 
     async function fetchBusinesses() {
       try {
@@ -68,6 +73,35 @@ export default function App() {
     fetchPlans();
     fetchBusinesses();
   }, []);
+useEffect(() => {
+  async function fetchFavorites() {
+    if (!token) {
+      setFavorites([]);
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/favorites`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("Error fetching favorites:", text);
+        return;
+      }
+
+      const data = await res.json();
+      setFavorites(data);
+    } catch (error) {
+      console.error("Error fetching favorites:", error);
+    }
+  }
+
+  fetchFavorites();
+}, [token]);
 
   // Fetches the currently logged-in user's latest data using the stored token.
   // This keeps the user state in sync after refresh.
@@ -175,6 +209,50 @@ export default function App() {
     return groups;
   }, {});
 
+  function isFavorited(businessId) {
+  return favorites.some(
+    (favorite) => Number(favorite.id) === Number(businessId)
+  );
+}
+  
+  async function handleToggleFavorite(businessId) {
+  try {
+    const alreadyFavorited = isFavorited(businessId);
+
+    const res = await fetch(
+      alreadyFavorited
+        ? `${API}/favorites/${businessId}`
+        : `${API}/favorites`,
+      {
+        method: alreadyFavorited ? "DELETE" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: alreadyFavorited ? null : JSON.stringify({ businessId }),
+      }
+    );
+
+    if (!res.ok) {
+      const data = await res.json();
+      setError(data.error || "Could not update favorite");
+      return;
+    }
+
+    const updatedRes = await fetch(`${API}/favorites`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const updatedFavorites = await updatedRes.json();
+    setFavorites(updatedFavorites);
+    setError("");
+  } catch (error) {
+    console.error("Error updating favorite:", error);
+    setError("Could not update favorite");
+  }
+}
   // Logs the user out by clearing token and user data from state and localStorage.
   function handleLogout() {
     setToken("");
@@ -303,6 +381,18 @@ export default function App() {
                     <p className="text-sm text-gray-500">
                       Location: {business.location}
                     </p>
+                    {token && (
+  <button
+    onClick={() => handleToggleFavorite(business.id)}
+    className={`mt-3 px-4 py-2 rounded-lg font-medium transition duration-200 ${
+      isFavorited(business.id)
+        ? "bg-yellow-400 text-black hover:bg-yellow-500"
+        : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+    }`}
+  >
+    {isFavorited(business.id) ? "Unfavorite" : "Favorite"}
+  </button>
+)}
                   </div>
                 ))}
               </div>
@@ -311,5 +401,4 @@ export default function App() {
         )}
       </div>
     </div>
-  );
-}
+  );}
