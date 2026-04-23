@@ -23,10 +23,10 @@ export default function AuthForm({
         <button
           type="button"
           onClick={() => setMode("login")}
-          className={`flex-1 py-2 rounded-lg font-medium transition ${
+          className={`flex-1 py-2 rounded-lg font-medium transition duration-200 ${
             mode === "login"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+  ? "bg-blue-500 text-white shadow-sm"
+  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
           }`}
         >
           Login
@@ -35,10 +35,10 @@ export default function AuthForm({
         <button
           type="button"
           onClick={() => setMode("register")}
-          className={`flex-1 py-2 rounded-lg font-medium transition ${
+          className={`flex-1 py-2 rounded-lg font-medium transition duration-200 ${
             mode === "register"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+  ? "bg-blue-500 text-white shadow-sm"
+  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
           }`}
         >
           Register
@@ -97,7 +97,7 @@ export default function AuthForm({
         {/* Submit Button */}
         <button
           type="submit"
-          className="mt-2 bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600 transition"
+          className="mt-2 bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600 hover:shadow-md transition duration-200"
         >
           {mode === "login" ? "Login" : "Create Account"}
         </button>

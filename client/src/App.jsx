@@ -185,123 +185,131 @@ export default function App() {
   }
 
   return (
-  <div className="min-h-screen bg-gray-100 py-10">
-    <div className="max-w-5xl mx-auto px-4">
-      <h1 className="text-4xl md:text-5xl font-bold text-center text-gray-900 mb-2">
-        Community Perk Pass
-      </h1>
-      <p className="text-center text-gray-600 mb-8">
-        Discover local deals and choose the membership that fits you best.
-      </p>
-
-      {/* Displays any error messages. */}
-            {error && (
-        <p className="bg-red-100 text-red-700 border border-red-200 rounded-md px-4 py-3 mb-6">
-          {error}
+    <div className="min-h-screen bg-gray-100 py-10">
+      <div className="max-w-5xl mx-auto px-4">
+        <h1 className="text-4xl md:text-5xl font-bold text-center text-gray-900 mb-2">
+          Community Perk Pass
+        </h1>
+        <p className="text-center text-gray-600 mb-8">
+          Discover local deals and choose the membership that fits you best.
         </p>
-      )}
 
-      {/* Shows user info if logged in, otherwise renders the authentication form. */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-8">
-        {token ? (
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <p className="text-lg font-semibold text-gray-800">
-                You are logged in as {user?.username}.
-              </p>
-              <p className="text-gray-600">
-                Current plan: {user?.plan_id ?? "None selected"}
-              </p>
-            </div>
-
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition"
-            >
-              Log Out
-            </button>
-          </div>
-        ) : (
-          <AuthForm
-            mode={mode}
-            setMode={setMode}
-            username={username}
-            setUsername={setUsername}
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            handleSubmit={handleSubmit}
-          />
+        {/* Displays any error messages. */}
+        {error && (
+          <p className="bg-red-100 text-red-700 border border-red-200 rounded-md px-4 py-3 mb-6">
+            {error}
+          </p>
         )}
-      </div>
-{/* Displays all plans and highlights the user's currently selected one. */}
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Plans</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-        {plans.map((plan) => {
-          const isCurrent = Number(user?.plan_id) === Number(plan.id);
-
-          return (
-            <div
-              key={plan.id}
-              className={`rounded-2xl p-6 shadow-sm border bg-white ${
-                isCurrent ? "border-green-500 ring-2 ring-green-100" : "border-gray-200"
-              }`}
-            >
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-              <p className="text-3xl font-bold text-blue-600 mb-1">
-                ${plan.monthly_price}
-                <span className="text-base font-medium text-gray-500">/month</span>
-              </p>
-              <p className="text-gray-700 font-medium mb-3">
-                ${plan.coupon_value} in coupons
-              </p>
-              <p className="text-gray-600 mb-4">{plan.description}</p>
-
-              {token &&
-                (isCurrent ? (
-                  <p className="inline-block text-green-700 bg-green-100 px-3 py-1 rounded-full font-semibold">
-                    Current Plan
-                  </p>
-                ) : (
-                  <button
-                    onClick={() => handleSelectPlan(plan.id)}
-                    className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition"
-                  >
-                    Select Plan
-                  </button>
-                ))}
-            </div>
-          );
-        })}
-      </div>
-
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">Businesses</h2>
-
-      {Object.entries(groupedBusinesses).map(([category, categoryBusinesses]) => (
-        <div key={category} className="mb-8">
-          <h3 className="text-xl font-semibold text-gray-800 mb-3">{category}</h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {categoryBusinesses.map((business) => (
-              <div
-                key={business.id}
-                className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm"
-              >
-                <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                  {business.name}
-                </h4>
-                <p className="text-gray-600 mb-2">{business.description}</p>
-                <p className="text-sm text-gray-500">
-                  Location: {business.location}
+        {/* Shows user info if logged in, otherwise renders the authentication form. */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-8">
+          {token ? (
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div>
+                <p className="text-lg font-semibold text-gray-800">
+                  You are logged in as {user?.username}.
+                </p>
+                <p className="text-gray-600">
+                  Current plan: {user?.plan_id ?? "None selected"}
                 </p>
               </div>
-            ))}
-          </div>
+
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 hover:shadow-md transition duration-200"
+              >
+                Log Out
+              </button>
+            </div>
+          ) : (
+            <AuthForm
+              mode={mode}
+              setMode={setMode}
+              username={username}
+              setUsername={setUsername}
+              email={email}
+              setEmail={setEmail}
+              password={password}
+              setPassword={setPassword}
+              handleSubmit={handleSubmit}
+            />
+          )}
         </div>
-      ))}
+        {/* Displays all plans and highlights the user's currently selected one. */}
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Plans</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+          {plans.map((plan) => {
+            const isCurrent = Number(user?.plan_id) === Number(plan.id);
+
+            return (
+              <div
+                key={plan.id}
+                className={`rounded-2xl p-6 shadow-sm border bg-white transition duration-200 hover:shadow-md hover:-translate-y-1 ${
+  isCurrent ? "border-green-500 ring-2 ring-green-100" : "border-gray-200"
+}`}
+              >
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  {plan.name}
+                </h3>
+                <p className="text-3xl font-bold text-blue-600 mb-1">
+                  ${plan.monthly_price}
+                  <span className="text-base font-medium text-gray-500">
+                    /month
+                  </span>
+                </p>
+                <p className="text-gray-700 font-medium mb-3">
+                  ${plan.coupon_value} in coupons
+                </p>
+                <p className="text-gray-600 mb-4">{plan.description}</p>
+
+                {token &&
+                  (isCurrent ? (
+                    <p className="inline-block text-green-700 bg-green-100 px-3 py-1 rounded-full font-semibold">
+                      Current Plan
+                    </p>
+                  ) : (
+                    <button
+  onClick={() => handleSelectPlan(plan.id)}
+  className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 hover:shadow-md transition duration-200"
+>
+  Select Plan
+</button>
+                  ))}
+              </div>
+            );
+          })}
+        </div>
+
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Businesses</h2>
+
+        {Object.entries(groupedBusinesses).map(
+          ([category, categoryBusinesses]) => (
+            <div key={category} className="mb-8">
+              <h3 className="text-xl font-semibold text-gray-800 mb-3 border-l-4 border-blue-500 pl-3">
+  {category}
+</h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {categoryBusinesses.map((business) => (
+                  <div
+                    key={business.id}
+                   className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm transition duration-200 hover:shadow-md hover:-translate-y-1"
+                  >
+                    <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                      {business.name}
+                    </h4>
+                    <p className="text-gray-600 mb-2">{business.description}</p>
+                    <p className="text-sm text-gray-500">
+                      Location: {business.location}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ),
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
 }
