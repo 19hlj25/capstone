@@ -211,7 +211,7 @@ useEffect(() => {
 
   function isFavorited(businessId) {
   return favorites.some(
-    (favorite) => Number(favorite.id) === Number(businessId)
+    (favorite) => Number(favorite.business_id) === Number(businessId)
   );
 }
   
@@ -358,7 +358,42 @@ useEffect(() => {
             );
           })}
         </div>
+{token && (
+  <section className="mb-10">
+    <h2 className="text-2xl font-bold text-gray-900 mb-4">
+      My Favorites
+    </h2>
 
+    {favorites.length === 0 ? (
+      <p className="text-gray-600 bg-white border border-gray-200 rounded-2xl p-5">
+        You have not favorited any businesses yet.
+      </p>
+    ) : (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {favorites.map((favorite) => (
+          <div
+            key={favorite.favorite_id}
+            className="bg-white border border-yellow-300 rounded-2xl p-5 shadow-sm"
+          >
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              {favorite.name}
+            </h3>
+            <p className="text-gray-600 mb-2">{favorite.description}</p>
+            <p className="text-sm text-gray-500">
+              Location: {favorite.location}
+            </p>
+            <button
+  onClick={() => handleToggleFavorite(favorite.business_id)}
+  className="mt-3 px-4 py-2 rounded-lg font-medium bg-yellow-400 text-black hover:bg-yellow-500 transition duration-200"
+>
+  Unfavorite
+</button>
+          </div>
+        ))}
+      </div>
+    )}
+  </section>
+)}
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Businesses</h2>
 
         {Object.entries(groupedBusinesses).map(

@@ -66,7 +66,7 @@ router.delete("/:businessId", async (req, res, next) => {
             return res.status(404).send({error: "Favorite not found."});
         }
 
-        res.send(deletedFavorites);
+        res.send(deletedFavorite);
     } catch (error) {
         next(error);
     }

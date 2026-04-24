@@ -22,7 +22,13 @@ export async function createFavorite(user_id, business_id) {
  */
 export async function getFavoritesByUser(user_id) {
   const SQL = `
-    SELECT favorites.id AS favorite_id, businesses.*
+    SELECT 
+      favorites.id AS favorite_id,
+      businesses.id AS business_id,
+      businesses.name,
+      businesses.category,
+      businesses.description,
+      businesses.location
     FROM favorites
     JOIN businesses
       ON favorites.business_id = businesses.id
