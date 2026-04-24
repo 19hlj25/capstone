@@ -1,5 +1,8 @@
 # Community Perk Pass
 
+Netify live link: https://community-perk-pass.netlify.app/
+Render backend link: https://capstone-0lfn.onrender.com/
+
 ## Overview
 Community Perk Pass is a subscription-based coupon platform designed to help users discover and save money at local small businesses. Users can create accounts, log in securely, and eventually access subscription-based coupon features.
 
