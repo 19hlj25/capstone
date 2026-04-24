@@ -1,8 +1,8 @@
 import express from "express";
 import {
-    createFavorite,
-    getFavoritesByUser,
-    deleteFavorite,
+  createFavorite,
+  getFavoritesByUser,
+  deleteFavorite,
 } from "../db/queries/favorites.js";
 
 const router = express.Router();
@@ -13,16 +13,16 @@ const router = express.Router();
  */
 
 router.get("/", async (req, res, next) => {
-    try {
-        if(!req.user) {
-            return res.status(401).send({ error: "You must be logged in." });
-        }
-
-        const favorites = await getFavoritesByUser(req.user.id);
-        res.send(favorites);
-    } catch (error) {
-        next(error);
+  try {
+    if (!req.user) {
+      return res.status(401).send({ error: "You must be logged in." });
     }
+
+    const favorites = await getFavoritesByUser(req.user.id);
+    res.send(favorites);
+  } catch (error) {
+    next(error);
+  }
 });
 
 /**
@@ -30,23 +30,22 @@ router.get("/", async (req, res, next) => {
  * Requires a businessId in the request body.
  */
 router.post("/", async (req, res, next) => {
-    try{
-        if (!req.user){
-            return res.status(401).send({ error: "You must be logged in." });
-        }
-
-        const { businessId } = req.body;
-
-        if(!businessId) {
-            return res.status(400).send ({ error: "businessId is required." });
-        } 
-        
-        const favorite = await createFavorite(req.user.id, businessId);
-        res.status(201).send(favorite);
-    }catch (error) {
-        next(error);
+  try {
+    if (!req.user) {
+      return res.status(401).send({ error: "You must be logged in." });
     }
 
+    const { businessId } = req.body;
+
+    if (!businessId) {
+      return res.status(400).send({ error: "businessId is required." });
+    }
+
+    const favorite = await createFavorite(req.user.id, businessId);
+    res.status(201).send(favorite);
+  } catch (error) {
+    next(error);
+  }
 });
 
 /**
@@ -54,22 +53,22 @@ router.post("/", async (req, res, next) => {
  * Requires a businessID in the route params.
  */
 router.delete("/:businessId", async (req, res, next) => {
-    try{
-        if(!req.user) {
-            return res.status(401).send({ error: "You must be logged in" });
-        }
-
-        const { businessId } = req.params;
-        const deletedFavorite = await deleteFavorite(req.user.id, businessId);
-        
-        if (!deletedFavorite) {
-            return res.status(404).send({error: "Favorite not found."});
-        }
-
-        res.send(deletedFavorite);
-    } catch (error) {
-        next(error);
+  try {
+    if (!req.user) {
+      return res.status(401).send({ error: "You must be logged in" });
     }
+
+    const { businessId } = req.params;
+    const deletedFavorite = await deleteFavorite(req.user.id, businessId);
+
+    if (!deletedFavorite) {
+      return res.status(404).send({ error: "Favorite not found." });
+    }
+
+    res.send(deletedFavorite);
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default router;
