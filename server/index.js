@@ -6,6 +6,7 @@ import usersRouter from "./routes/users.js";
 import plansRouter from "./routes/plans.js";
 import getUserFromToken from "./middleware/getUserFromToken.js";
 import favoritesRouter from "./routes/favorites.js";
+import { ensureDatabase } from "./db/bootstrap.js";
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
+await ensureDatabase();
 
 
 app.listen(PORT, () => {
